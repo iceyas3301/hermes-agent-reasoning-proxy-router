@@ -49,6 +49,7 @@ reasoning_proxy_router:
   xhigh_high_match_threshold: 4
   pending_intent_enabled: true
   pending_intent_ttl_minutes: 30
+  pending_intent_max_entries: 512
   log_decisions: false
   decision_log: false
 ```
@@ -86,22 +87,44 @@ Example:
 4. User replies `yes` or `go ahead`.
 5. The next turn inherits the stored effort instead of treating `yes` as a low-effort message.
 
-Rejections like `no`, `cancel`, `stop`, or `not yet` do not consume the pending intent.
+Rejections like `no`, `cancel`, `stop`, or `not yet` clear the pending intent so a later unrelated `yes` cannot inherit stale context.
 
 ## Files
 
 - `plugins/reasoning-proxy-router/__init__.py`: plugin implementation.
 - `plugins/reasoning-proxy-router/plugin.yaml`: plugin metadata.
 - `examples/reasoning_proxy_router.yaml`: sanitized config block.
+- `scripts/install.sh`: one-step installer and config updater.
 - `docs/configuration.md`: full config notes and operational guidance.
 - `docs/security.md`: what not to publish.
 
-## Install into a Hermes checkout
+## One-step install and configuration
 
-Copy the plugin folder into your Hermes Agent checkout:
+From a local clone of this repository:
 
 ```bash
-cp -R plugins/reasoning-proxy-router ~/.hermes/hermes-agent/plugins/
+git clone https://github.com/iceyas3301/hermes-agent-reasoning-proxy-router.git
+cd hermes-agent-reasoning-proxy-router
+./scripts/install.sh
+```
+
+That installs the plugin to `~/.hermes/plugins/reasoning-proxy-router`, enables it in `~/.hermes/config.yaml`, and adds safe `reasoning_proxy_router` defaults without overwriting existing values. It writes backups before replacing an existing plugin or config file.
+
+For a non-default profile:
+
+```bash
+./scripts/install.sh --profile my-profile
+```
+
+The installer does not restart Hermes. Start a new CLI session, or restart the gateway only when you are ready for runtime changes to load.
+
+## Manual install
+
+If you do not want the installer to edit config, copy the plugin folder yourself:
+
+```bash
+mkdir -p ~/.hermes/plugins
+cp -R plugins/reasoning-proxy-router ~/.hermes/plugins/
 ```
 
 Enable it in `~/.hermes/config.yaml`:

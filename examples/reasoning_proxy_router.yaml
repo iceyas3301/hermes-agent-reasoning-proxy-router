@@ -20,6 +20,7 @@ reasoning_proxy_router:
   xhigh_high_match_threshold: 4
   pending_intent_enabled: true
   pending_intent_ttl_minutes: 30
+  pending_intent_max_entries: 512
   log_decisions: false
   decision_log: false
 

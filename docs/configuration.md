@@ -2,6 +2,20 @@
 
 This document explains the reasoning proxy router setup in public-safe form.
 
+## One-step install
+
+From a local clone:
+
+```bash
+git clone https://github.com/iceyas3301/hermes-agent-reasoning-proxy-router.git
+cd hermes-agent-reasoning-proxy-router
+./scripts/install.sh
+```
+
+The installer copies the plugin to `~/.hermes/plugins/reasoning-proxy-router`, enables it in the target config, adds missing `reasoning_proxy_router` defaults, and writes backups first. Use `./scripts/install.sh --profile my-profile` for a named profile.
+
+It does not restart Hermes. Start a new CLI session or restart the gateway when you are ready.
+
 ## Required plugin enablement
 
 The plugin must be listed under `plugins.enabled` in the active Hermes profile config:
@@ -26,6 +40,7 @@ reasoning_proxy_router:
   xhigh_high_match_threshold: 4
   pending_intent_enabled: true
   pending_intent_ttl_minutes: 30
+  pending_intent_max_entries: 512
   log_decisions: false
   decision_log: false
 ```
@@ -62,6 +77,10 @@ Enables terse approval inheritance. This is useful on Telegram, where users ofte
 ### `pending_intent_ttl_minutes`
 
 How long an approval intent stays valid. The documented setup uses `30` minutes.
+
+### `pending_intent_max_entries`
+
+Caps the in-memory pending-intent store. Expired entries are pruned opportunistically before new entries are stored. The documented setup uses `512`.
 
 ### `log_decisions`
 
@@ -113,7 +132,7 @@ delegation:
 3. The plugin loads config.
 4. The classifier picks an effort and reason.
 5. The result is clamped between `min` and `max`.
-6. The plugin calls `_set_session_reasoning_override(session_key, {"enabled": True, "effort": effort})`.
+6. The plugin maps router-local effort to provider-safe reasoning config and calls `_set_session_reasoning_override(session_key, reasoning_config)`.
 7. Gateway dispatch continues with `{"action": "allow"}`.
 
 The plugin is fail-open. If it breaks, messages should still go through.
