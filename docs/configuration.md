@@ -26,7 +26,7 @@ reasoning_proxy_router:
   xhigh_high_match_threshold: 4
   pending_intent_enabled: true
   pending_intent_ttl_minutes: 30
-  log_decisions: true
+  log_decisions: false
   decision_log: false
 ```
 
@@ -65,15 +65,15 @@ How long an approval intent stays valid. The documented setup uses `30` minutes.
 
 ### `log_decisions`
 
-Writes concise routing decisions to normal Hermes logs. These lines should not include full message text.
+Writes concise routing decisions to normal Hermes logs. These lines include the session key, which may contain platform/user/chat/thread identifiers. Leave this off unless you are debugging locally.
 
 ### `decision_log`
 
 Optional JSONL audit trail. Keep it disabled unless debugging. If enabled, avoid committing the output file. It can expose session keys and routing metadata.
 
-## Optional semantic classifier settings
+## Reserved semantic classifier settings
 
-The plugin includes config keys for an optional semantic classifier:
+The plugin includes reserved config keys for a future semantic classifier:
 
 ```yaml
 reasoning_proxy_router:
@@ -86,13 +86,13 @@ reasoning_proxy_router:
   semantic_classifier_max_chars: 800
 ```
 
-Keep this disabled unless you have a clear reason to pay the latency cost. The deterministic path is the normal path.
+These keys are no-ops in the current version. Keep them disabled unless you implement the semantic path yourself. The deterministic path is the normal path.
 
 Never commit a real `semantic_classifier_api_key`. Prefer environment-backed secret loading if you extend this path.
 
 ## Baseline reasoning settings
 
-The router is separate from global reasoning defaults:
+The router is separate from global reasoning defaults. Router-local `none` disables reasoning in the provider request, and router-local `xhigh` maps to provider-safe `high` unless Hermes adds native `xhigh` support for the active backend.
 
 ```yaml
 agent:

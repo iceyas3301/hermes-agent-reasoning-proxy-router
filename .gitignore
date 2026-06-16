@@ -8,4 +8,14 @@ venv/
 auth.json
 *.log
 *.jsonl
+logs/
+sessions/
+session*/
+*.session
+*.sqlite
+*.db
+config.yaml
+*.bak
+*.tmp
+*.swp
 .DS_Store

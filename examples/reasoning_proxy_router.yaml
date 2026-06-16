@@ -20,10 +20,10 @@ reasoning_proxy_router:
   xhigh_high_match_threshold: 4
   pending_intent_enabled: true
   pending_intent_ttl_minutes: 30
-  log_decisions: true
+  log_decisions: false
   decision_log: false
 
-  # Optional semantic classifier. Disabled by default to avoid latency and secret handling.
+  # Reserved semantic classifier keys. These are no-ops unless you implement that path.
   semantic_classifier_enabled: false
   semantic_classifier_url: http://127.0.0.1:8080/v1/chat/completions
   semantic_classifier_model: gpt-5.4-mini

@@ -15,13 +15,15 @@ The plugin hooks into Hermes gateway events:
 
 The gateway then builds the model request with the selected effort.
 
-Effort levels:
+Effort levels used by the router:
 
 ```text
 none < minimal < low < medium < high < xhigh
 ```
 
-The default classifier is deterministic. It uses local regex and length rules, so normal chat does not pay for a classifier model call. Optional semantic classifier settings exist, but they are disabled by default.
+Provider request mapping is conservative: router-local `none` disables reasoning, and router-local `xhigh` is sent as provider-safe `high` unless Hermes adds native `xhigh` support for the active backend.
+
+The default classifier is deterministic. It uses local regex and length rules, so normal chat does not pay for a classifier model call. Semantic classifier config keys are reserved for future use and are no-ops in this version.
 
 ## Live-style configuration
 
@@ -47,7 +49,7 @@ reasoning_proxy_router:
   xhigh_high_match_threshold: 4
   pending_intent_enabled: true
   pending_intent_ttl_minutes: 30
-  log_decisions: true
+  log_decisions: false
   decision_log: false
 ```
 
@@ -116,17 +118,17 @@ Restart the Hermes gateway only when you are ready for runtime changes to take e
 
 ## Verify
 
-From a Hermes Agent source checkout with the tests available:
+From this repository:
+
+```bash
+python -m pytest -q
+```
+
+To run the original focused Hermes checkout test, if you have the full Hermes Agent source tree available:
 
 ```bash
 cd ~/.hermes/hermes-agent
 ./venv/bin/python -m pytest tests/plugins/test_reasoning_proxy_router.py -q -o 'addopts='
-```
-
-Known-good focused result from the documented setup:
-
-```text
-13 passed in 0.20s
 ```
 
 To verify the plugin is active at runtime, check the gateway or agent log for lines like this, using fake IDs in public docs:
