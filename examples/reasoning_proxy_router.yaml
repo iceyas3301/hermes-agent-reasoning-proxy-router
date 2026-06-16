@@ -1,0 +1,33 @@
+# Sanitized reasoning proxy router example for Hermes Agent.
+# Merge this into the active profile's ~/.hermes/config.yaml.
+
+agent:
+  reasoning_effort: low
+
+delegation:
+  reasoning_effort: minimal
+
+plugins:
+  enabled:
+    - reasoning-proxy-router
+
+reasoning_proxy_router:
+  enabled: true
+  default: medium
+  min: none
+  max: xhigh
+  low_char_limit: 80
+  xhigh_high_match_threshold: 4
+  pending_intent_enabled: true
+  pending_intent_ttl_minutes: 30
+  log_decisions: true
+  decision_log: false
+
+  # Optional semantic classifier. Disabled by default to avoid latency and secret handling.
+  semantic_classifier_enabled: false
+  semantic_classifier_url: http://127.0.0.1:8080/v1/chat/completions
+  semantic_classifier_model: gpt-5.4-mini
+  semantic_classifier_api_key: ""
+  semantic_classifier_timeout_seconds: 3
+  semantic_classifier_min_confidence: 0.8
+  semantic_classifier_max_chars: 800

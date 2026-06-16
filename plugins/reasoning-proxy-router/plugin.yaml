@@ -1,0 +1,9 @@
+name: reasoning-proxy-router
+version: "0.1.0"
+description: "Route incoming gateway messages to Hermes reasoning effort deterministically, with optional semantic fallback and terse-approval inheritance. Telegram-safe and fail-open."
+author: "Hermes / Team Volt"
+hooks:
+  - pre_gateway_dispatch
+  - post_llm_call
+commands:
+  - reasoning-proxy-router
